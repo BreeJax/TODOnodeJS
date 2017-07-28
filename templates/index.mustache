@@ -6,7 +6,17 @@
     <title>TODO List</title>
   </head>
   <body>
-    <p>test</p>
-
+    <form class="" action="/" method="post">
+      <input type="text" name="todos" placeholder="Add a todo" value="">
+      <button type="submit" name="button">Add todo</button>
+    </form>
+    <ul>
+      {{#todos}}
+      <li>
+        <input type="checkbox">
+        {{.}}
+      </li>
+      {{/todos}}
+    </ul>
   </body>
 </html>
