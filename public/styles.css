@@ -5,12 +5,9 @@ body {
 
 li {
   list-style: none;
+  font-size: 1.5em;
 }
 
-.checkbox:checked + ul {
-  color: blue;
-  text-decoration: line-through;
-}
 input[type=text] {
   font-size: 2em;
   padding: 0.15em;

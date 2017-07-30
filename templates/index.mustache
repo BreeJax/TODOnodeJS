@@ -13,10 +13,19 @@
     <ul>
       {{#todos}}
       <li>
-        <input type="checkbox" class="checkbox">
-        {{.}}
+        <form class="" action="/completed" method="post">
+          <button type="submit" name="buttonComplete"> Task Completed</button>
+          <input type="hidden" name="submitedTodo" value={{.}}>
+          <lable>{{.}}</label>
+        </form>
       </li>
       {{/todos}}
+    </ul>
+    <h3>Completed Tasks</h3>
+    <ul>
+      {{#fintodos}}
+      <li>{{.}}</li>
+      {{/fintodos}}
     </ul>
   </body>
 </html>

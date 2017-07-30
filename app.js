@@ -11,17 +11,23 @@ app.set("views", "./templates")
 app.set("view engine", "mustache")
 app.use(express.static("public"))
 
-const todos = []
+let todos = []
+let fintodos = []
 
 app.get("/", (req, res) => {
-  console.log("test one")
-  res.render("index", { todos: todos })
+  res.render("index", { todos: todos, fintodos: fintodos })
 })
 
 app.post("/", (req, res) => {
-  console.log("test two")
-  console.log(req.body.todos)
   todos.push(req.body.todos)
+
+  res.redirect("/")
+})
+
+app.post("/completed", (req, res) => {
+  var todoIndex = todos.indexOf(req.body.submitedTodo)
+  todos.splice(todoIndex)
+  fintodos.push(req.body.submitedTodo)
   res.redirect("/")
 })
 
