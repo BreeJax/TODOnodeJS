@@ -58,12 +58,11 @@ app.post("/", (req, res) => {
 
 app.post("/completed", (req, res) => {
   const todos = req.session.todos || []
-  console.dir(req.session.todos)
   const id = parseInt(req.body.id)
-  let fintodos = todos.find(todos => todos.id === id)
-  if (fintodos) {
-    fintodos.completed = true
-    fintodos.when = new Date()
+  let fintodo = todos.find(todos => todos.id === id)
+  if (fintodo) {
+    fintodo.completed = true
+    fintodo.when = new Date()
     req.session.todos = todos
   }
   res.redirect("/")
