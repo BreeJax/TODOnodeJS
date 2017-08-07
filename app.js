@@ -14,6 +14,22 @@ app.use(
   })
 )
 
+let users = {
+  users: [
+    { id: 1, userName: "Gavin", password: "Panda_Jarvis" },
+    { id: 2, userName: "Jason", password: "Platypus" },
+    { id: 3, userName: "Mark", password: "Decimal" },
+    { id: 4, userName: "Angel", password: "Lifeguard" }
+  ]
+}
+let authentication = (req, res, next) => {
+  if (req.session && req.session.user) {
+    next()
+  } else {
+    res.redirect("login")
+  }
+}
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -23,29 +39,40 @@ app.set("views", "./templates")
 app.set("view engine", "mustache")
 app.use(express.static("public"))
 
+app.get("/login", (req, res) => {
+  const userName = req.query.userName
+  const password = req.query.password
+
+  let person = users.users.find(user => {
+    return user.userName === userName && user.password === password
+  })
+
+  if (!!person) {
+    req.session.user = person
+    res.redirect("/")
+  } else {
+    res.render("login")
+  }
+})
+app.use(authentication)
 //req, res cycle- youre browser sends  a request to "/", and gets back a responce.
-
-//let todos = [] //array that we are pulling from
-//let fintodos = [] //where we will end up pulling
-// res.send("Hello world") <-- this is a test so that you can see if you are connected properly -- used before you have templates. Also, this is a string.
-
 app.get("/", (req, res) => {
+  const user = req.session.person
   const todos = req.session.todos || []
 
   const todoData = {
     todos: todos.filter(todos => !todos.completed),
     fintodos: todos.filter(todos => todos.completed)
   }
-
-  // console.log(`${req.connection.remoteAddress} connected and ask for /`) <- connects to the server. ${req.connection.remoteAddress} shows who is asking for access
-  //When Gavin did this in class, we were the requesters and his machine was the responder.
-  //to find out your IP address, in terminal type in "ifconfig"
-  //There can ONLY BE ONE RENDER
-  res.render("index", todoData) //<-- it already learned where the templates were, but this tells it which one to render. you should always have everything inside of one folder, not multiple folders OF templates. we do not have /index because this is NOT part of the URL. This determins what the user sees when they look for / in the URL. The client won't see that we named this "Index" - thats because that is just for us/ a detail for the server. They are looking for /.
-  // the {object} the keys of the variable are what the mustach can see, the values are what inside of those variables.
+  res.render("index", todoData, user)
 })
 
-app.post("/", (req, res) => {
+app.post("/logout", (req, res, next) => {
+  req.session.regenerate()
+  res.redirect("login")
+})
+
+app.post("/add", (req, res) => {
   const todos = req.session.todos || []
   const description = req.body.description
 
