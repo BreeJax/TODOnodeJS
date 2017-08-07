@@ -57,14 +57,15 @@ app.get("/login", (req, res) => {
 app.use(authentication)
 //req, res cycle- youre browser sends  a request to "/", and gets back a responce.
 app.get("/", (req, res) => {
-  const user = req.session.person
+  const user = req.session.user
   const todos = req.session.todos || []
 
   const todoData = {
     todos: todos.filter(todos => !todos.completed),
-    fintodos: todos.filter(todos => todos.completed)
+    fintodos: todos.filter(todos => todos.completed),
+    user: user
   }
-  res.render("index", todoData, user)
+  res.render("index", todoData)
 })
 
 app.post("/logout", (req, res, next) => {
