@@ -69,9 +69,7 @@ app.get("/", (req, res) => {
 })
 
 app.post("/logout", (req, res, next) => {
-  console.log("siging out")
   req.session.destroy(err => {
-    console.log(req.session)
     res.redirect("login")
   })
 })
