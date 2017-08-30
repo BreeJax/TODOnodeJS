@@ -16,18 +16,17 @@ const User = require("./models/userSchema")
 // models = require("./models"),
 // expressValidator = require("express-validator"),
 
-const app = express()
-
 mongoose.connect("mongodb://localhost/todoLogin")
+const app = express()
 
 // Define how passport authenticates
 passport.use(
   "login",
   //MW
   // uses the local Strategy (e.g. NOT using twitter,facebook, etc)
-  new LocalStrategy(function(username, password, next) {
+  new LocalStrategy((username, password, next) => {
     // Ask for an authenticated user based on name and password
-    User.authenticate(username, password, function(err, user) {
+    User.authenticate(username, password, (err, user) => {
       // ERORR
       if (err) {
         return next(err)
@@ -39,7 +38,6 @@ passport.use(
       }
 
       // NO USER
-      console.log("nope, no user")
       return next(null, false, {
         message: "There is no user with that username and password."
       })
@@ -49,54 +47,25 @@ passport.use(
 
 passport.use(
   "register",
-  new LocalStrategy(function(username, password, next) {
-    console.log(`registering a user with ${username} and ${password}`)
-
-    // find a user in Mongo with provided username
-    User.findOne({ username: username }, function(err, user) {
-      // In case of any error, return using the next method
-      if (err) {
-        console.log("Error in SignUp: " + err)
-        return next(err)
-      }
-      // already exists
-      if (user) {
-        console.log("User already exists with username: " + username)
-        return next(null, false)
-      } else {
-        // if there is no user with that email
-        // create the user
-        var newUser = new User()
-
-        // set the user's local credentials
-        newUser.username = username
-        newUser.password = createHash(password)
-
-        // save the user
-        newUser.save(function(err) {
-          if (err) {
-            console.log("Error in Saving user: " + err)
-            throw err
-          }
-          console.log("User Registration succesful")
-          return done(null, newUser)
-        })
-      }
-    })
+  new LocalStrategy((username, password, next) => {
+    let data = {
+      username: username,
+      password: password
+    }
+    // create a user
+    User.create(data)
+      .then(user => {
+        // save to database
+        return next(null, user)
+      })
+      .catch(err => next(err))
   })
 )
 
-// Generates hash using bCrypt
-var createHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
-}
-
-// freeze-dry the user
 passport.serializeUser(function(user, next) {
   //MW
   next(null, user.id)
 })
-
 // thaw the user
 passport.deserializeUser(function(id, next) {
   //MW
@@ -104,7 +73,6 @@ passport.deserializeUser(function(id, next) {
     next(err, user)
   })
 })
-
 // sessions!
 app.use(
   expressSession({
@@ -113,10 +81,13 @@ app.use(
     saveUninitialized: false
   })
 )
-
-// Initialize password and use the session
 app.use(passport.initialize()) //MW
 app.use(passport.session()) //MW
+// Generates hash using bCrypt
+
+// freeze-dry the user
+
+// Initialize password and use the session
 // app.use(flash())
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -127,6 +98,10 @@ app.engine("mustache", mustacheExpress())
 app.set("views", "./templates")
 app.set("view engine", "mustache")
 app.use(express.static("public"))
+
+var createHash = function(password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
+}
 
 app.get("/login", (req, res) => {
   res.render("login")
