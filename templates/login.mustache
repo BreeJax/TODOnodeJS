@@ -7,8 +7,14 @@
   </head>
   <body>
     <h1>Hello- Please Login to see you TODO page</h1>
-    <form action="/login" method="get">
-      <input type="text" placeholder="User Name" value= "" name="userName" required>
+    <form action="/login" method="post">
+      <input type="text" placeholder="User Name" name="username" required>
+      <input type="text" placeholder="Password" name="password" required>
+      <button type="submit" name="userLogin">Login</button>
+    </form>
+<h1>Don't have an account? Create one now</h1>
+    <form action="/register" method="post">
+      <input type="text" placeholder="User Name" name="userName" required>
       <input type="text" placeholder="Password" name="password" required>
       <button type="submit" name="userLogin">Login</button>
     </form>

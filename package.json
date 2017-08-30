@@ -5,11 +5,17 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "express-session": "^1.15.4",
+    "express-validator": "^4.0.0",
     "jsonfile": "^3.0.1",
-    "mustache-express": "^1.2.5"
+    "mongoose": "^4.11.9",
+    "mongoose-findorcreate": "^2.0.0",
+    "mustache-express": "^1.2.5",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {},
   "scripts": {
